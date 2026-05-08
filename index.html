@@ -1,0 +1,644 @@
+<\!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VC投资人性格测试</title>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #090b15;
+      color: #e8eaf0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+    }
+
+    .bg {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(0, 100, 255, 0.07) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 50%, rgba(120, 50, 255, 0.05) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 680px;
+      padding: 40px 24px;
+    }
+
+    .card {
+      background: rgba(22, 26, 44, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 32px;
+      padding: 48px 40px;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .card.fade-out {
+      opacity: 0;
+      transform: translateY(12px) scale(0.98);
+    }
+
+    .card.fade-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(16px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .progress-bar {
+      width: 100%; height: 4px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 2px; margin-bottom: 8px; overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+      border-radius: 2px;
+      transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .progress-text {
+      text-align: right; font-size: 13px;
+      color: rgba(255, 255, 255, 0.25);
+      margin-bottom: 32px; letter-spacing: 0.5px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .landing { text-align: center; }
+
+    .landing .badge {
+      display: inline-block;
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid rgba(59, 130, 246, 0.18);
+      color: #60a5fa; font-size: 12px; font-weight: 600;
+      letter-spacing: 1px; padding: 6px 16px;
+      border-radius: 100px; margin-bottom: 24px;
+      text-transform: uppercase;
+    }
+
+    .landing h1 {
+      font-size: 42px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 12px;
+      background: linear-gradient(135deg, #f0f4ff 0%, #94b8ff 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .landing .subtitle {
+      color: rgba(255, 255, 255, 0.5); font-size: 16px; line-height: 1.7; margin-bottom: 8px;
+    }
+
+    .landing .subtitle strong { color: rgba(255, 255, 255, 0.7); -webkit-text-fill-color: rgba(255, 255, 255, 0.7); }
+
+    .landing .types-preview {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+      margin: 28px 0 36px;
+    }
+
+    .landing .types-preview span {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 7px 15px; border-radius: 100px;
+      font-size: 13px; color: rgba(255, 255, 255, 0.45);
+      transition: all 0.2s;
+    }
+
+    .landing .types-preview span:hover {
+      background: rgba(59, 130, 246, 0.08);
+      border-color: rgba(59, 130, 246, 0.2);
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .landing .q-count { font-size: 13px; color: rgba(255, 255, 255, 0.25); margin-bottom: 32px; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 14px 36px; border: none; border-radius: 14px;
+      font-size: 16px; font-weight: 600; cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6, #7c3aed); color: #fff;
+      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.25);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 36px rgba(59, 130, 246, 0.35);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.06);
+      color: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .btn-secondary:hover { background: rgba(255, 255, 255, 0.1); transform: translateY(-1px); }
+
+    .q-number {
+      font-size: 13px; font-weight: 600;
+      color: rgba(255, 255, 255, 0.25);
+      letter-spacing: 1px; margin-bottom: 14px;
+    }
+
+    .q-text {
+      font-size: 22px; font-weight: 600; line-height: 1.55;
+      margin-bottom: 32px; color: #f0f4ff; min-height: 3em;
+    }
+
+    .options { display: flex; flex-direction: column; gap: 11px; }
+
+    .option {
+      display: flex; align-items: center; width: 100%;
+      padding: 17px 22px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 16px; cursor: pointer;
+      transition: all 0.25s ease; text-align: left;
+      font-size: 15px; line-height: 1.5; color: rgba(255, 255, 255, 0.75);
+    }
+
+    .option:hover {
+      background: rgba(59, 130, 246, 0.07);
+      border-color: rgba(59, 130, 246, 0.2);
+      transform: translateX(4px);
+    }
+
+    .option.selected {
+      background: rgba(59, 130, 246, 0.11);
+      border-color: rgba(59, 130, 246, 0.35);
+      color: #fff;
+    }
+
+    .o-label {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 26px; height: 26px; border-radius: 50%;
+      background: rgba(255, 255, 255, 0.06);
+      font-size: 12px; font-weight: 600; margin-right: 16px;
+      flex-shrink: 0; transition: all 0.25s;
+    }
+
+    .option.selected .o-label { background: #3b82f6; color: #fff; }
+
+    .result { text-align: center; }
+
+    .result .r-icon {
+      font-size: 72px; margin-bottom: 12px; display: block;
+      animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .result .r-badge {
+      display: inline-block;
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.13);
+      color: #60a5fa; font-size: 12px; font-weight: 600;
+      letter-spacing: 1px; padding: 5px 14px;
+      border-radius: 100px; margin-bottom: 16px;
+      text-transform: uppercase;
+    }
+
+    .result h2 { font-size: 32px; font-weight: 700; margin-bottom: 8px; color: #f0f4ff; }
+    .result .r-tagline { font-size: 16px; color: rgba(255, 255, 255, 0.35); font-style: italic; margin-bottom: 20px; }
+
+    .result .r-desc {
+      font-size: 15.5px; line-height: 1.8; color: rgba(255, 255, 255, 0.55);
+      margin-bottom: 30px; max-width: 500px; margin-left: auto; margin-right: auto;
+    }
+
+    .result .stats {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+      margin-bottom: 32px; text-align: left;
+    }
+
+    .result .stat-item {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 14px; padding: 14px 18px;
+    }
+
+    .result .stat-item .stat-label { font-size: 12px; color: rgba(255, 255, 255, 0.3); margin-bottom: 2px; }
+
+    .result .stat-item .stat-bar {
+      width: 100%; height: 5px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 3px; overflow: hidden; margin-top: 6px;
+    }
+
+    .result .stat-item .stat-fill {
+      height: 100%; border-radius: 3px; width: 0%;
+      transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .result .stat-item .stat-value { font-size: 13px; font-weight: 600; color: #f0f4ff; }
+
+    .result .share-section { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    .btn-share {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      padding: 11px 22px; border-radius: 12px; cursor: pointer;
+      color: rgba(255, 255, 255, 0.6); font-size: 14px; font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .btn-share:hover { background: rgba(255, 255, 255, 0.09); transform: translateY(-1px); color: #fff; }
+
+    #confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 10; }
+    .hidden { display: none \!important; }
+
+    .toast {
+      position: fixed; bottom: 40px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: rgba(22, 26, 44, 0.95);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 12px 28px; border-radius: 14px;
+      color: rgba(255, 255, 255, 0.8); font-size: 14px;
+      z-index: 20; opacity: 0;
+      transition: all 0.4s ease; pointer-events: none;
+    }
+
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 520px) {
+      .container { padding: 16px 12px; }
+      .card { padding: 28px 20px; border-radius: 24px; }
+      .landing h1 { font-size: 28px; }
+      .q-text { font-size: 18px; min-height: 4em; }
+      .option { padding: 14px 16px; font-size: 14px; }
+      .result .stats { grid-template-columns: 1fr; }
+      .result h2 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <canvas id="confetti-canvas"></canvas>
+  <div class="toast" id="toast"></div>
+
+  <div class="container">
+    <div class="card" id="card">
+
+      <div id="landing" class="landing">
+        <div class="badge">🧪 Personality Test</div>
+        <h1>你是哪种<br>VC 投资人？</h1>
+        <p class="subtitle"><strong>26 道题</strong>，测出你的真实投资性格</p>
+        <div class="types-preview">
+          <span>🦄 独角兽猎人</span>
+          <span>📊 数据驱动者</span>
+          <span>🤝 人脉之王</span>
+          <span>🔬 行业专家</span>
+          <span>🧘 长期主义者</span>
+          <span>⚡ 颠覆者</span>
+        </div>
+        <p class="q-count">⏱ 约 5 分钟 · 测过的投资人都说准</p>
+        <button class="btn btn-primary" onclick="startQuiz()">开始测试 →</button>
+      </div>
+
+      <div id="quiz" class="hidden">
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="progress-text" id="progressText">1 / 26</div>
+        <div class="q-number" id="qNumber">问题 01</div>
+        <div class="q-text" id="qText"></div>
+        <div class="options" id="options"></div>
+      </div>
+
+      <div id="result" class="result hidden">
+        <span class="r-icon" id="rIcon"></span>
+        <div class="r-badge" id="rBadge">YOUR TYPE</div>
+        <h2 id="rTitle"></h2>
+        <div class="r-tagline" id="rTagline"></div>
+        <p class="r-desc" id="rDesc"></p>
+        <div class="stats" id="stats"></div>
+        <div class="share-section">
+          <button class="btn-share" onclick="restart()">🔄 重新测试</button>
+          <button class="btn-share" onclick="shareResult()">📤 分享结果</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const TYPES = [{
+      id: 'unicorn_hunter',
+      label: '🦄 独角兽猎人',
+      title: '独角兽猎人',
+      tagline: '"要么百倍回报，要么为零"',
+      desc: '你是一位敢想敢赌的进取型投资人。你痴迷于寻找下一个改变世界的百亿美金公司，愿意为巨大的市场想象空间下重注。你不怕争议，只怕错过。你的投资哲学是：与其投一堆平庸的项目，不如把筹码押在可能改变行业格局的创始人身上。别人看风险，你看的是可能性。',
+      color: '#f59e0b'
+    }, {
+      id: 'data_driven',
+      label: '📊 数据驱动者',
+      title: '数据驱动者',
+      tagline: '"In Data We Trust"',
+      desc: '你严谨、理性、讲逻辑。每一个 investment memo 都必须有数据支撑，每一个数字都经得起推敲。你的 DD 流程可能是业内最严格的——但这正是你的基金 consistently outperform 的原因。你不相信直觉，只相信交叉验证过的结论。你是那个在所有人都在说"这次不一样"时，冷静指出数据不支持的人。',
+      color: '#3b82f6'
+    }, {
+      id: 'networker',
+      label: '🤝 人脉之王',
+      title: '人脉之王',
+      tagline: '"投资就是投人"',
+      desc: '你的手机通讯录就是最好的 deal flow 来源。你深信最好的项目永远来自 trusted network 的推荐。你不仅是投资人，更是资源整合者——给被投企业介绍客户、招募核心人才、对接下一轮融资。创始人不只把你当投资人，更把你当合伙人。你的存在本身就是被投企业最大的竞争优势之一。',
+      color: '#10b981'
+    }, {
+      id: 'industry_expert',
+      label: '🔬 行业专家',
+      title: '行业专家',
+      tagline: '"不懂不投，懂了重仓"',
+      desc: '你是真正的行业深耕者。你只投自己真正懂的方向，在这条垂直赛道里，你的认知深度可能比大多数创始人还要深。你看技术路线图像看地图一样清晰，能准确判断产品壁垒和市场节奏。你的 portfolio 可能不大，但每一个项目都是你深度研究后的精挑细选。你相信：投资的上限是你的认知深度。',
+      color: '#8b5cf6'
+    }, {
+      id: 'patient_capital',
+      label: '🧘 长期主义者',
+      title: '长期主义者',
+      tagline: '"Slow is smooth, smooth is fast"',
+      desc: '你是那个在市场狂热时保持冷静、在恐慌时保持镇定的人。你不追风口，不看短期波动。你看重的是单位经济模型（LTV/CAC）、复购率和可持续的竞争优势。你愿意陪一家企业走 10 年甚至更久，就像陪伴一棵树慢慢生长。你的 LP 都知道，你是那个在 panic sell 时还能逆向思考的人。',
+      color: '#ec4899'
+    }, {
+      id: 'disruptor',
+      label: '⚡ 颠覆者',
+      title: '颠覆者',
+      tagline: '"Change the World or Die Trying"',
+      desc: '你对"渐进式创新"提不起兴趣。你要投的是那些真正能改变游戏规则的前沿技术——AI、量子计算、脑机接口、太空技术。你享受站在技术最前沿的感觉，哪怕这意味着更高的失败率。对你来说，真正的风险不是失败，而是没有参与到改变未来的浪潮中。你是那种会在所有人质疑时，依然坚信技术力量的人。',
+      color: '#ef4444'
+    }];
+
+    const Q = [
+      { q: '凌晨 2 点，一个陌生创始人加你微信说"我有个改变世界的项目"。你？', o: [
+        { t: 'unicorn_hunter', text: '秒回：说来听听，别让我等' },
+        { t: 'data_driven', text: '先翻他朋友圈和天眼查，第二天再回' },
+        { t: 'networker', text: '先问是谁推荐的，没有信任基础不聊' },
+        { t: 'patient_capital', text: '已读不回，明早 10 点再说' }]
+      },
+      { q: '一个从没创过业的清华教授来融资。你最先关心的是？', o: [
+        { t: 'disruptor', text: '底层技术可能有突破，学术背景是加分项' },
+        { t: 'patient_capital', text: '没有商业化经验，风险太高，pass' },
+        { t: 'industry_expert', text: '先查他的论文引用和学术界口碑' },
+        { t: 'unicorn_hunter', text: '他的技术能解决什么真实市场问题，TAM多大' }]
+      },
+      { q: '你做 IC 汇报时，发现 VP 贴的数据算错了。你？', o: [
+        { t: 'data_driven', text: '当场礼貌纠正，数据不准确比什么都致命' },
+        { t: 'networker', text: '私下和 VP 说，给足面子' },
+        { t: 'unicorn_hunter', text: '数据差一点点无所谓，核心看市场逻辑' },
+        { t: 'patient_capital', text: '建议暂停，DD 流程需要复盘' }]
+      },
+      { q: '被投企业创始人用公司钱买了辆迈巴赫。你？', o: [
+        { t: 'data_driven', text: '立刻要求查账并召开特别董事会' },
+        { t: 'networker', text: '先问他这车打算怎么用，接客户可以接受' },
+        { t: 'unicorn_hunter', text: '只要业绩对赌达标，我不干涉' },
+        { t: 'patient_capital', text: '这是认知问题，说明还没 ready 上市' }]
+      },
+      { q: '一个你 pass 掉的项目被隔壁 VC 投了而且估值翻 5 倍。你？', o: [
+        { t: 'data_driven', text: '立刻复盘当时漏掉了什么信号' },
+        { t: 'patient_capital', text: '很正常，每个基金有自己的风格和周期' },
+        { t: 'networker', text: '约那个 VC 的合伙人喝咖啡，互通有无' },
+        { t: 'unicorn_hunter', text: '没上市的都不算数，我淘汰的自然有我的道理' }]
+      },
+      { q: '创始人说"我不需要盈利，先烧出护城河"。你信吗？', o: [
+        { t: 'unicorn_hunter', text: 'TAM 够大就可以烧，Amazon 也是这么过来的' },
+        { t: 'data_driven', text: '给我看你的 LTV/CAC 和 unit economics' },
+        { t: 'networker', text: '看看竞品都在怎么烧钱' },
+        { t: 'patient_capital', text: '烧钱买增长的时代在 2022 年就结束了' }]
+      },
+      { q: '做 DD 期间，创始人突然住院联系不上了。你？', o: [
+        { t: 'patient_capital', text: '推迟 DD，等创始人康复再说' },
+        { t: 'data_driven', text: '马上换对接人继续推进，不能停' },
+        { t: 'networker', text: '帮他联系最好的医院资源' },
+        { t: 'industry_expert', text: '看 CTO 能不能顶上，团队完整度很重要' }]
+      },
+      { q: '你的 LP 说"我想让女儿来你基金实习"。你？', o: [
+        { t: 'networker', text: '当然安排！LP 的事就是我的事' },
+        { t: 'data_driven', text: '先让她做一份行业研究报告看看水平' },
+        { t: 'patient_capital', text: '可以，但要有正式的考核机制' },
+        { t: 'industry_expert', text: '让她跟行业组做几个项目，感受一下' }]
+      },
+      { q: '你最喜欢的 deal sourcing 方式是什么？', o: [
+        { t: 'unicorn_hunter', text: '站在行业大会上做 Keynote，让创始人来找我' },
+        { t: 'data_driven', text: '建自己的数据系统批量扫描项目' },
+        { t: 'networker', text: '靠深度人脉网络推荐' },
+        { t: 'industry_expert', text: '泡在技术社区、Github 和学术论文里' }]
+      },
+      { q: '一个 20 岁大学生说要做"下一个抖音"。你？', o: [
+        { t: 'unicorn_hunter', text: '年轻人才懂年轻人，有戏' },
+        { t: 'data_driven', text: '有 DAU 和留存数据吗？先看看' },
+        { t: 'networker', text: '看他团队里有没有有经验的人带' },
+        { t: 'industry_expert', text: '劝他换个方向，短视频赛道已经大局已定' }]
+      },
+      { q: '你投资的 A 轮公司被大厂抄了核心功能。你的建议是？', o: [
+        { t: 'unicorn_hunter', text: '太好了，说明我们的方向被验证了，市场足够大' },
+        { t: 'data_driven', text: '帮公司找差异化和新的增长曲线' },
+        { t: 'networker', text: '看能不能联系上大厂那个部门聊聊合作' },
+        { t: 'industry_expert', text: '早就预判到了，技术和专利壁垒就是护城河' }]
+      },
+      { q: '一个技术很牛但社恐到不敢看你的创始人来融资。你？', o: [
+        { t: 'disruptor', text: '真正的天才往往不善社交，我看技术' },
+        { t: 'networker', text: '给他配一个商业能力强的人互补' },
+        { t: 'industry_expert', text: '技术壁垒够高就 OK，我能判断技术好坏' },
+        { t: 'patient_capital', text: '先投一小笔，观察他能否组建完整团队' }]
+      },
+      { q: '创始人说"我要给自己开 500 万年薪"。你？', o: [
+        { t: 'patient_capital', text: '早期创业拿高薪是原则问题，我不同意' },
+        { t: 'data_driven', text: '和对标公司对比一下就知道合不合理' },
+        { t: 'networker', text: '可以谈，用业绩对赌来约束' },
+        { t: 'unicorn_hunter', text: '只要公司增长够快，我不管创始人拿多少' }]
+      },
+      { q: '你相信投资赚的钱主要来自什么？', o: [
+        { t: 'unicorn_hunter', text: '眼光和胆识，看准了下重注' },
+        { t: 'data_driven', text: '数据和系统化决策' },
+        { t: 'networker', text: '信息差和人脉红利' },
+        { t: 'industry_expert', text: '深度的行业认知和研究' }]
+      },
+      { q: '一个明星项目只给你 3 天时间做 DD。你？', o: [
+        { t: 'unicorn_hunter', text: '3 天够了，好项目不等人' },
+        { t: 'data_driven', text: '通宵也要把核心数据跑完' },
+        { t: 'networker', text: '打电话问一圈行业内朋友的意见' },
+        { t: 'industry_expert', text: '这个赛道我研究三年了，3 小时都够' }]
+      },
+      { q: '你投的创始人想挖你另一家被投的 CTO。你？', o: [
+        { t: 'networker', text: '介绍双方认识，让他们自己聊' },
+        { t: 'patient_capital', text: '明确拒绝，这是利益冲突' },
+        { t: 'data_driven', text: '分析一下谁更需要这个 CTO，公平解决' },
+        { t: 'industry_expert', text: '和双方分别聊，帮助做最优人才配置' }]
+      },
+      { q: '行业晚宴上，你最可能坐在谁旁边？', o: [
+        { t: 'unicorn_hunter', text: '那个最有名的创始人，听听他对未来的判断' },
+        { t: 'data_driven', text: '那个刚跑出惊人数据的创始人' },
+        { t: 'networker', text: '那个资源最多的 LP' },
+        { t: 'industry_expert', text: '那个技术大牛 CTO，跟他聊技术趋势' }]
+      },
+      { q: '创始人给你做 Demo 时现场崩溃了。你？', o: [
+        { t: 'unicorn_hunter', text: '没关系，我看的是人和市场，不是 demo' },
+        { t: 'industry_expert', text: '看团队怎么临场解决问题，这比 demo 更真实' },
+        { t: 'data_driven', text: '问技术栈和架构设计，找崩溃根因' },
+        { t: 'patient_capital', text: '没关系，改天再约一次完整的演示' }]
+      },
+      { q: '你更害怕错过什么？', o: [
+        { t: 'unicorn_hunter', text: '下一个千亿美金公司就站在我面前我没认出来' },
+        { t: 'data_driven', text: '某个关键数据没有交叉验证导致错误决策' },
+        { t: 'networker', text: '一个有影响力的创始人我忘了建立联系' },
+        { t: 'disruptor', text: '某个前沿技术方向没有及时布局' }]
+      },
+      { q: '创始人说"不投我你就错过了下一个字节跳动"。你？', o: [
+        { t: 'data_driven', text: '画饼谁不会，拿数据说话' },
+        { t: 'unicorn_hunter', text: '我欣赏你的自信，说说你到底哪里不一样' },
+        { t: 'patient_capital', text: '这话说出来说明心性还不够成熟' },
+        { t: 'industry_expert', text: '好的创始人不靠嘴，我看产品和技术' }]
+      },
+      { q: '你的基金年会在哪里办？', o: [
+        { t: 'unicorn_hunter', text: '拉斯维加斯，边赌边聊边看 show' },
+        { t: 'data_driven', text: '安静的高端酒店，认真复盘数据' },
+        { t: 'networker', text: '在 LP 的私人会所或俱乐部' },
+        { t: 'industry_expert', text: '和行业技术大会合办，一举两得' }]
+      },
+      { q: '你发现一个冷门赛道，所有公司都活得很好但没人投。你？', o: [
+        { t: 'unicorn_hunter', text: '没人投说明不够性感，资本不感兴趣' },
+        { t: 'data_driven', text: '花两个月把完整赛道图谱画出来' },
+        { t: 'networker', text: '去找这个赛道里最牛的人聊' },
+        { t: 'industry_expert', text: '这正是我想要的——没人关注的隐形冠军' }]
+      },
+      { q: '创始人提议用融资款收购竞品。你？', o: [
+        { t: 'unicorn_hunter', text: '好战略！快速清场锁定市场地位' },
+        { t: 'data_driven', text: '需要详细分析并购后整合的可行性' },
+        { t: 'networker', text: '我认识竞品的投资人，可以撮合' },
+        { t: 'patient_capital', text: '先把产品打磨好再说，不要分心' }]
+      },
+      { q: '你的基金 IRR 连续两年低于同行。你最先做什么？', o: [
+        { t: 'unicorn_hunter', text: '反思是不是太保守了，错过了大机会' },
+        { t: 'data_driven', text: '全面复盘每个项目的决策过程' },
+        { t: 'networker', text: '约几个业绩好的同行吃饭取经' },
+        { t: 'industry_expert', text: '重新审视我们对赛道的判断是否过时' }]
+      },
+      { q: '你投了 7 年的公司还没退出，LP 开始抱怨。你？', o: [
+        { t: 'patient_capital', text: '告诉他们好公司值得长期持有' },
+        { t: 'data_driven', text: '用数据说明为什么继续持有更值' },
+        { t: 'networker', text: '用 portfolio 里其他退出收益来平衡' },
+        { t: 'industry_expert', text: '做一次全面的行业判断，看是否该退了' }]
+      },
+      { q: '如果明天不能再做 VC 了，你最遗憾什么？', o: [
+        { t: 'unicorn_hunter', text: '还没投出过一个百亿美金公司' },
+        { t: 'data_driven', text: '还有太多行业数据没来得及深度分析' },
+        { t: 'networker', text: '积累了这么多优秀的人脉没好好利用' },
+        { t: 'industry_expert', text: '对这个行业的认知才刚刚开始' }]
+      }
+    ];
+
+    let cur = 0, scores = {}, ans = [];
+    const $ = id => document.getElementById(id);
+    const card = $('card'), landing = $('landing'), quiz = $('quiz'), result = $('result');
+    const pf = $('progressFill'), pt = $('progressText'), qn = $('qNumber'), qt = $('qText'), ops = $('options');
+
+    function init() { scores = {}; TYPES.forEach(t => scores[t.id] = 0); cur = 0; ans = []; }
+
+    function startQuiz() { init(); transition(() => { landing.classList.add('hidden'); quiz.classList.remove('hidden'); result.classList.add('hidden'); renderQ(); }); }
+
+    function renderQ() {
+      const q = Q[cur];
+      qn.textContent = '问题 ' + String(cur + 1).padStart(2, '0');
+      qt.textContent = q.q;
+      pf.style.width = ((cur + 1) / Q.length * 100) + '%';
+      pt.textContent = (cur + 1) + ' / ' + Q.length;
+      const labels = ['A', 'B', 'C', 'D'];
+      ops.innerHTML = q.o.map((opt, i) =>
+        '<button class="option" onclick="pick(' + i + ')" data-i="' + i + '">' +
+        '<span class="o-label">' + labels[i] + '</span>' +
+        '<span class="o-text">' + opt.text + '</span></button>'
+      ).join('');
+    }
+
+    function pick(idx) {
+      const opt = Q[cur].o[idx];
+      TYPES.forEach(t => { if (t.id === opt.t) scores[t.id] += 2; });
+      ans.push(idx);
+      ops.querySelectorAll('.option').forEach(el => el.classList.remove('selected'));
+      ops.querySelector('[data-i="' + idx + '"]').classList.add('selected');
+      setTimeout(() => { cur++; if (cur < Q.length) renderQ(); else showResult(); }, 300);
+    }
+
+    function showResult() {
+      const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+      const topId = sorted[0][0];
+      const top = TYPES.find(t => t.id === topId);
+      const total = Object.values(scores).reduce((a, b) => a + b, 0) || 1;
+
+      $('rIcon').textContent = top.label.split(' ')[0];
+      $('rBadge').textContent = top.label;
+      $('rTitle').textContent = top.title;
+      $('rTagline').textContent = top.tagline;
+      $('rDesc').textContent = top.desc;
+
+      $('stats').innerHTML = TYPES.map(t => {
+        const pct = Math.round((scores[t.id] / total) * 100);
+        return '<div class="stat-item"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="stat-label">' + t.label + '</span><span class="stat-value">' + pct + '%</span></div><div class="stat-bar"><div class="stat-fill" style="background:' + t.color + '" data-w="' + pct + '"></div></div></div>';
+      }).join('');
+
+      transition(() => {
+        quiz.classList.add('hidden');
+        result.classList.remove('hidden');
+        setTimeout(() => { document.querySelectorAll('.stat-fill').forEach(el => { el.style.width = el.dataset.w + '%'; }); }, 200);
+        launchConfetti();
+      });
+    }
+
+    function restart() { transition(() => { result.classList.add('hidden'); landing.classList.remove('hidden'); if (confettiParticles) confettiParticles.length = 0; }); }
+
+    function shareResult() {
+      const title = $('rTitle').textContent;
+      const tagline = $('rTagline').textContent;
+      const text = '我是「' + title + '」型 VC 投资人 ' + tagline + '\n\n26 道题测出你的投资性格，敢来试试吗？';
+      if (navigator.share) { navigator.share({ title: 'VC投资人性格测试', text: text }); }
+      else { navigator.clipboard.writeText(text).then(() => { toast('✅ 已复制到剪贴板，快去分享吧！'); }).catch(() => { toast('复制失败，请手动复制'); }); }
+    }
+
+    function toast(msg) { const el = $('toast'); el.textContent = msg; el.classList.add('show'); clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('show'), 2500); }
+
+    function transition(fn) { card.classList.add('fade-out'); setTimeout(() => { fn(); card.classList.remove('fade-out'); card.classList.add('fade-in'); }, 300); }
+
+    let confettiParticles = [], confettiId = null;
+    const cv = document.getElementById('confetti-canvas'), cx = cv.getContext('2d');
+    function resize() { cv.width = window.innerWidth; cv.height = window.innerHeight; }
+    window.addEventListener('resize', resize); resize();
+
+    function launchConfetti() {
+      confettiParticles = [];
+      const colors = ['#3b82f6', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#06b6d4', '#f97316'];
+      for (let i = 0; i < 150; i++) { confettiParticles.push({ x: Math.random() * cv.width, y: Math.random() * cv.height - cv.height, w: Math.random() * 10 + 5, h: Math.random() * 6 + 3, color: colors[Math.floor(Math.random() * colors.length)], vy: Math.random() * 3 + 2, vx: (Math.random() - 0.5) * 2, rot: Math.random() * 360, rs: (Math.random() - 0.5) * 6 }); }
+      if (confettiId) cancelAnimationFrame(confettiId); anim();
+    }
+
+    function anim() {
+      cx.clearRect(0, 0, cv.width, cv.height);
+      let alive = false;
+      confettiParticles.forEach(p => { p.x += p.vx; p.y += p.vy; p.rot += p.rs; p.vy += 0.02; if (p.y < cv.height + 20) alive = true; cx.save(); cx.translate(p.x, p.y); cx.rotate(p.rot * Math.PI / 180); cx.fillStyle = p.color; cx.globalAlpha = Math.max(0, 1 - (p.y / cv.height) * 0.6); cx.fillRect(-p.w/2, -p.h/2, p.w, p.h); cx.restore(); });
+      if (alive) confettiId = requestAnimationFrame(anim);
+    }
+  </script>
+</body>
+</html>
